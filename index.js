@@ -1,8 +1,9 @@
 // Import required modules
 const express = require("express");
-const dotenv = require("dotenv").config();
+ require("dotenv").config();
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/userRoutes");
+const postRoutes = require("./routes/postRoutes");
 const PORT= process.env.PORT || 7000;
 const app = express();
 
@@ -20,6 +21,8 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // Routes
 app.use("/api/user", userRoutes);
+app.use("/api/post", postRoutes);
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
