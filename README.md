@@ -64,7 +64,8 @@ userId: ID of the user adding the comment
 comment: Comment content
 
 ## Packages Used
-Express: Fast, unopinionated, minimalist web framework for Node.js.
-Mongoose: MongoDB object modeling tool designed to work in an asynchronous environment.
-bcrypt: Library to hash passwords.
-dotenv: Loads environment variables from a .env file into process.env.
+## Express: Fast, unopinionated, minimalist web framework for Node.js.
+## Mongoose: MongoDB object modeling tool designed to work in an asynchronous environment.
+## bcrypt: Library to hash passwords.
+## jsonwebtoken: JSON Web Token implementation for Node.js. This package is used for authentication and authorization purposes in the API.
+## dotenv: Loads environment variables from a .env file into process.env.
