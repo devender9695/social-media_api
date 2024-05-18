@@ -1,5 +1,11 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+// Function to generate a JWT
+const createJWT = (userId) => {
+  return jwt.sign({ userId }, process.env.JWT_SECRET_KEY, { expiresIn: "30m" });
+};
 
 exports.registerUser = async (req, res) => {
   try {
@@ -9,10 +15,15 @@ exports.registerUser = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ error: "Email already exists" });
     }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ email, password: hashedPassword, username });
     await newUser.save();
-    res.status(201).json({ message: "User registered successfully", newUser });
+
+    // Generate JWT for the new user
+    const token = createJWT(newUser._id);
+
+    res.status(201).json({ message: "User registered successfully", token });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal server error" });
@@ -27,21 +38,15 @@ exports.loginUser = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    let passwordToCheck = password;
-
-    if (user.resetPassword) {
-      passwordToCheck = user.resetPassword;
-    }
-
-    const passwordMatch = await bcrypt.compare(passwordToCheck, user.password);
+    const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
       return res.status(401).json({ error: "Invalid password" });
     }
 
-    user.resetPassword = null;
-    await user.save();
+    // Generate JWT for the logged-in user
+    const token = createJWT(user._id);
 
-    res.json({ message: "Login successful", user });
+    res.json({ message: "Login successful", token });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal server error" });
